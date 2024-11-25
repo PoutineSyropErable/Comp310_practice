@@ -1,1 +1,0 @@
-/mnt/e/School and Work/University (real)/Semester 9/Comp 310/practice/msg/rpcgen/readme.md
