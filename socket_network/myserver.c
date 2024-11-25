@@ -2,47 +2,49 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
-#include <sys/un.h>
+#include <netinet/in.h>
 #include <unistd.h>
 
-#define SOCKET_PATH "/tmp/simple_rpc_socket"
+#define PORT 12345
 #define BUFFER_SIZE 1024
 
 int main() {
     int server_fd, client_fd;
-    struct sockaddr_un server_addr;
+    struct sockaddr_in server_addr, client_addr;
+    socklen_t addr_len = sizeof(client_addr);
     char buffer[BUFFER_SIZE];
 
     // Create a socket
-    server_fd = socket(AF_UNIX, SOCK_STREAM, 0);
+    server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd < 0) {
         perror("Socket creation failed");
         exit(EXIT_FAILURE);
     }
 
-    // Bind to a socket path
+    // Configure server address
     memset(&server_addr, 0, sizeof(server_addr));
-    server_addr.sun_family = AF_UNIX;
-    strncpy(server_addr.sun_path, SOCKET_PATH, sizeof(server_addr.sun_path) - 1);
-    unlink(SOCKET_PATH); // Ensure the path is clear
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = INADDR_ANY; // Listen on all network interfaces
+    server_addr.sin_port = htons(PORT);
 
+    // Bind to the port
     if (bind(server_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
         perror("Bind failed");
         close(server_fd);
         exit(EXIT_FAILURE);
     }
 
-    // Listen for a connection
-    if (listen(server_fd, 1) < 0) {
+    // Listen for incoming connections
+    if (listen(server_fd, 5) < 0) {
         perror("Listen failed");
         close(server_fd);
         exit(EXIT_FAILURE);
     }
 
-    printf("Server is waiting for connections...\n");
+    printf("Server is waiting for connections on port %d...\n", PORT);
 
     // Accept a connection
-    client_fd = accept(server_fd, NULL, NULL);
+    client_fd = accept(server_fd, (struct sockaddr *)&client_addr, &addr_len);
     if (client_fd < 0) {
         perror("Accept failed");
         close(server_fd);
@@ -76,7 +78,6 @@ int main() {
     // Clean up
     close(client_fd);
     close(server_fd);
-    unlink(SOCKET_PATH);
     printf("Server shut down.\n");
 
     return 0;
