@@ -7,6 +7,8 @@
 #define _TIME_SERVICE_H_RPCGEN
 
 #include <rpc/rpc.h>
+// /usr/include/tirpc/rpc/rpc.h
+// #include "/usr/include/tirpc/rpc/rpc.h"
 
 #ifdef __cplusplus
 extern "C" {
