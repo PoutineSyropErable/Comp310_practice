@@ -19,6 +19,7 @@ void* Threadcode(void* args);
 int sum = 0, prod = 1;
 
 int main() {
+	printf("\n\n-------------------START OF MAIN CODE-------------------\n\n");
 	pthread_t threads[MAX_THREADS];
 
 	int a[ARRAY_SIZE];
