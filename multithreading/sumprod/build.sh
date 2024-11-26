@@ -1,8 +1,8 @@
 #/bin/bash
 rm core.*
 
-gcc -g -pthread -o a a.c
+gcc -g -pthread -o multithreaded_sumprod multithreaded_sumprod.c
 
 
 ulimit -c unlimited
-./a
+./multithreaded_sumprod
