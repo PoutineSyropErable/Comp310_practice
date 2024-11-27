@@ -21,6 +21,7 @@ typedef struct {
 void* Threadcode(void* args);
 
 int main() {
+	printf("\n\n-------------------START OF MAIN CODE-------------------\n\n");
 	pthread_t threads[LOOP_NUMBER];
 	SumProdArgs args_struct[LOOP_NUMBER];
 
